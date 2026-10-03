@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FitBuddy - AI Workout Generator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <main class="wrap narrow">
+    <header class="top"><a class="brand" href="/">FitBuddy</a><a href="/view-all-users">Admin dashboard</a></header>
+
+    <section class="card">
+      <h1>&#128170; FitBuddy - AI Workout Generator</h1>
+      <p class="lede">Tell us about you and get a 7-day plan plus a nutrition tip.</p>
+
+      {% if error %}<div class="alert error" role="alert">{{ error }}</div>{% endif %}
+
+      <form id="plan-form" action="/generate-workout" method="post">
+        <label for="username">Name</label>
+        <input id="username" name="username" type="text" maxlength="60" required value="{{ form.username if form else '' }}">
+
+        <label for="user_id">User ID <span class="hint">(a number you will reuse to send feedback)</span></label>
+        <input id="user_id" name="user_id" type="number" min="1" step="1" required value="{{ form.user_id if form else '' }}">
+
+        <div class="row">
+          <div>
+            <label for="age">Age</label>
+            <input id="age" name="age" type="number" min="10" max="100" step="1" required value="{{ form.age if form else '' }}">
+          </div>
+          <div>
+            <label for="weight">Weight (kg)</label>
+            <input id="weight" name="weight" type="number" min="20" max="300" step="0.1" required value="{{ form.weight if form else '' }}">
+          </div>
+        </div>
+
+        <label for="goal">Fitness goal</label>
+        <input id="goal" name="goal" type="text" list="goals" maxlength="200" required
+               placeholder="e.g. weight loss, muscle gain, flexibility" value="{{ form.goal if form else '' }}">
+        <datalist id="goals">
+          <option value="Weight loss"><option value="Muscle gain"><option value="General fitness"><option value="Flexibility">
+        </datalist>
+
+        <label for="intensity">Workout intensity</label>
+        {% set chosen = (form.intensity if form and form.intensity else 'medium') %}
+        <select id="intensity" name="intensity">
+          <option value="low" {{ 'selected' if chosen == 'low' }}>Low</option>
+          <option value="medium" {{ 'selected' if chosen == 'medium' }}>Medium</option>
+          <option value="high" {{ 'selected' if chosen == 'high' }}>High</option>
+        </select>
+
+        <button id="submit-btn" class="btn" type="submit">Generate plan</button>
+      </form>
+    </section>
+  </main>
+  <script>
+    document.getElementById("plan-form").addEventListener("submit", function () {
+      var b = document.getElementById("submit-btn");
+      b.disabled = true; b.textContent = "Building your plan...";
+    });
+  </script>
+</body>
+</html>

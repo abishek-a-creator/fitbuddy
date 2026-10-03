@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Your Workout Plan - FitBuddy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <main class="wrap">
+    <header class="top"><a class="brand" href="/">FitBuddy</a><a href="/view-all-users">Admin dashboard</a></header>
+
+    {% if error %}<div class="alert error" role="alert">{{ error }}</div>{% endif %}
+    {% if message %}<div class="alert ok" role="status">&#9989; {{ message }}</div>{% endif %}
+
+    {% if username %}
+    <section class="card">
+      <h1>&#127947;&#65039; Your Personalized Workout Plan</h1>
+      <h2>User information</h2>
+      <dl class="facts">
+        <div><dt>Name</dt><dd>{{ username }}</dd></div>
+        <div><dt>User ID</dt><dd>{{ user_id }}</dd></div>
+        <div><dt>Age</dt><dd>{{ age }}</dd></div>
+        <div><dt>Weight</dt><dd>{{ weight }} kg</dd></div>
+        <div><dt>Goal</dt><dd>{{ goal }}</dd></div>
+        <div><dt>Intensity</dt><dd>{{ intensity | capitalize }}</dd></div>
+      </dl>
+    </section>
+
+    {% if nutrition_tip %}
+    <section class="card">
+      <h2>&#128161; Nutrition tip</h2>
+      <p>{{ nutrition_tip }}</p>
+    </section>
+    {% endif %}
+
+    {% if updated_plan %}
+    <section class="card">
+      <h2>Updated workout plan</h2>
+      <pre>{{ updated_plan | clean_plan }}</pre>
+      <details>
+        <summary>Show original plan</summary>
+        <pre>{{ workout_plan | clean_plan }}</pre>
+      </details>
+    </section>
+    {% else %}
+    <section class="card">
+      <h2>Workout plan</h2>
+      <pre>{{ workout_plan | clean_plan }}</pre>
+    </section>
+    {% endif %}
+    {% endif %}
+
+    <section class="card">
+      <h2>&#128221; Share your feedback</h2>
+      <form action="/submit-feedback" method="post">
+        <label for="fb-id">Your unique User ID</label>
+        <input id="fb-id" name="user_id" type="number" min="1" step="1" required
+               placeholder="Enter the same User ID used to generate your plan" value="{{ user_id if user_id else '' }}">
+        <label for="fb-text">Your feedback</label>
+        <textarea id="fb-text" name="feedback" rows="3" required
+                  placeholder="e.g. more focus on cardio, include more rest days"></textarea>
+        <button class="btn" type="submit">Submit feedback</button>
+      </form>
+    </section>
+
+    {% if not username %}<p class="center"><a href="/">&larr; Create a new plan</a></p>{% endif %}
+  </main>
+</body>
+</html>
